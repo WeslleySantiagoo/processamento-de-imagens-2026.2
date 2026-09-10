@@ -1,0 +1,1 @@
+# processamento-de-imagem-2026.2
