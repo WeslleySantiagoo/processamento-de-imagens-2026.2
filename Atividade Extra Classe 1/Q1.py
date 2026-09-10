@@ -15,7 +15,9 @@ def contar_transicoes(x):
 
 
 if __name__ == "__main__":
-    x = np.array([False, True, False, False, True])
+    # x = np.array([1, False, True, 0])
+    # x = np.array([[1, 2, 3], [4, 5, 6]])
+    x = np.array([False, True, False, False, True, True, False, True, True, False])
 
     print("Sequencia:", x)
     print("Numero de transicoes de False para True:", contar_transicoes(x))
