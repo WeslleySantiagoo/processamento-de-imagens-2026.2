@@ -19,11 +19,11 @@ def estatisticas(A):
 
 
 if __name__ == "__main__":
-    n = 10
-    # n = 5
-    # n = 6
-    # n = 2
-    A = np.arange(n * n).reshape(n, n)
+    linhas = 4
+    colunas = 5
+    # linhas = 10
+    # colunas = 10
+    A = np.arange(linhas * colunas).reshape(linhas, colunas)
 
     soma_linhas, soma_colunas, media_linhas, media_colunas = estatisticas(A)
 
