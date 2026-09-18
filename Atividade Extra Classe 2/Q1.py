@@ -63,6 +63,8 @@ def refletir_metade_superior(imagem: np.ndarray):
 
 def salvar_comparacao(imagens: tuple[np.ndarray, ...], saida: Path):
     """Exibe e salva as seis imagens em uma grade 2 × 3."""
+    # Usado IA apenas para amostragem visual
+
     titulos = (
         "(a) imagem original",
         "(b) negativo da imagem",
