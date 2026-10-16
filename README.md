@@ -13,11 +13,20 @@ questão (`Q1.py`, `Q2.py` e assim por diante).
 | `Atividade Extra Classe 3/` | Rotação, ampliação, filtragem espacial, esboço a lápis e Laplaciano. |
 | `Atividade Extra Classe 4/` | Transformada de Fourier, filtros passa-baixa, passa-alta e gaussiano no domínio da frequência. |
 | `Atividade Extra Classe 5/` | Histogramas, equalização e operações morfológicas em imagens binárias. |
+| `Projeto/` | Projeto da disciplina: Sistema de segmentação e contagem diferencial de leucócitos (proposta, código e documentação). |
 
 As atividades 2 a 5 guardam as imagens de origem em suas pastas de imagens e
 salvam as prévias em `resultados/`. A LEC5 também possui um `Qx.md` para cada
 questão, com as respostas e análises pedidas. Os arquivos `LEC*.zip` na raiz
 são as entregas compactadas.
+
+## Projeto da Disciplina
+
+- **Tema:** Sistema de Segmentação e Contagem Diferencial Automática de Leucócitos em Imagens de Sangue Periférico (Leucograma Digital).
+- **Proposta Inicial:** Localizada em [`Projeto/Proposta projeto/`](./Projeto/Proposta%20projeto/).
+  - Documento fonte em LaTeX: [`proposta_projeto.tex`](./Projeto/Proposta%20projeto/proposta_projeto.tex).
+  - Documento PDF compilado: [`out/proposta_projeto.pdf`](./Projeto/Proposta%20projeto/out/proposta_projeto.pdf).
+- **Objetivo:** Automatizar a detecção, segmentação (núcleo e citoplasma) e classificação diferencial das cinco linhagens leucocitárias (Neutrófilos, Linfócitos, Monócitos, Eosinófilos e Basófilos), emitindo o laudo percentual a partir de imagens microscópicas.
 
 ## Como executar
 
