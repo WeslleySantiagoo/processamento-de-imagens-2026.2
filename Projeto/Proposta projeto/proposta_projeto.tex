@@ -1,0 +1,180 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\onehalfspacing
+
+% ============================================================
+\begin{document}
+% ============================================================
+\begin{titlepage}
+    \pagenumbering{Alph}
+    \centering
+    \IfFileExists{Marcas_UFRPE-02.jpg}{%
+        \includegraphics[width=3.2cm]{Marcas_UFRPE-02.jpg}\\[0.3cm]
+    }{%
+        \vspace*{1.5cm}
+    }
+    {\small\bfseries Universidade Federal Rural de Pernambuco}\\[0.1cm]
+    {\small Departamento de Estat\'{i}stica e Inform\'{a}tica}\\[0.05cm]
+    {\small Bacharelado em Sistemas de Informa\c{c}\~{a}o}
+    \vspace{2.5cm}
+    
+    {\large\bfseries
+        Sistema de Segmenta\c{c}\~{a}o e Contagem Diferencial Autom\'{a}tica de Leuc\'{o}citos em Imagens de Sangue Perif\'{e}rico
+    }\\[1.2cm]
+    
+    {\normalsize
+        Proposta Inicial de Projeto\\[0.2em]
+        Disciplina: Processamento de Imagens (2026.2)\\[0.2em]
+        Professor: Lucas Fernando da Silva Cambuim
+    }
+    \vfill
+    
+    {\normalsize
+        \textbf{Integrantes do Grupo:}\\[0.2cm]
+        \MakeUppercase{Weslley Santiago}\\[0.1cm]
+    }
+    \vspace{1.5cm}
+    
+    {\normalsize Recife -- PE\\[0.1cm] Outubro de 2026}
+\end{titlepage}
+
+\newpage
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+% ============================================================
+% 1. CONTEXTUALIZAÇÃO E MOTIVAÇÃO DO PROBLEMA
+% ============================================================
+\section{Contextualiza\c{c}\~{a}o do Problema e Motiva\c{c}\~{a}o}
+
+O hemograma \'{e} um exame laboratorial b\'{a}sico de rotina cl\'{i}nica, no qual a contagem diferencial de leuc\'{o}citos (gl\'{o}bulos brancos) \'{e} indispens\'{a}vel para investigar infec\c{c}\~{o}es, alergias e doen\c{c}as hematol\'{o}gicas. No sangue perif\'{e}rico normal, circulam cinco linhagens com aspectos visuais pr\'{o}prios:
+
+\begin{itemize}
+    \item \textbf{Neutr\'{o}filos:} mais comuns, possuem n\'{u}cleo dividido em m\'{u}ltiplos lobos e citoplasma com pequenas granula\c{c}\~{o}es;
+    \item \textbf{Linf\'{o}citos:} c\'{e}lulas menores, com n\'{u}cleo redondo e denso que ocupa quase todo o corpo celular;
+    \item \textbf{Mon\'{o}citos:} maiores c\'{e}lulas da corrente sangu\'{i}nea, com n\'{u}cleo chanfrado (formato reniforme) e citoplasma espa\c{c}oso;
+    \item \textbf{Eosin\'{o}filos:} com n\'{u}cleo bilobulado e citoplasma repleto de gr\^{a}nulos avermelhados/alaranjados;
+    \item \textbf{Bas\'{o}filos:} linhagem rara ($<1\%$), caracterizada por gr\^{a}nulos azul-escuros/p\'{u}rpuras bem salientes sobre o n\'{u}cleo.
+\end{itemize}
+
+\paragraph{Motiva\c{c}\~{a}o:}
+A ideia deste projeto nasceu conversando com a minha namorada, que cursa Biomedicina. Durante as aulas pr\'{a}ticas de hematologia, ela comentava o quanto \'{e} exaustivo e demorado analisar as l\^{a}minas no microsc\'{o}pio \'{o}ptico: \'{e} preciso memorizar dezenas de peculiaridades visuais de cada c\'{e}lula e contar cerca de 100 elementos por paciente. Com o tempo de an\'{a}lise, o cansa\c{c}o visual naturalmente aumenta a margem de d\'{u}vida e erro na contagem.
+
+Diante disso, a proposta \'{e} construir um sistema simples e direto que processe a foto microsc\'{o}pica, identifique a c\'{e}lula, separe n\'{u}cleo e citoplasma e gere o relat\'{o}rio com os percentuais de cada tipo de leuc\'{o}cito, aplicando na pr\'{a}tica os temas da disciplina de Processamento de Imagens.
+
+% ============================================================
+% 2. BASE DE DADOS
+% ============================================================
+\section{Base de Dados}
+
+Para viabilizar o treinamento e a avalia\c{c}\~{a}o do pipeline, ser\~{a}o exploradas duas abordagens complementares de dados p\'{u}blicos:
+
+\begin{enumerate}
+    \item \textbf{Imagens de Campo Amplo de L\^{a}mina (Multi-c\'{e}lulas):} para testar a localiza\c{c}\~{a}o e a contabilidade de leuc\'{o}citos por campo microsc\'{o}pico cercado de hem\'{a}cias, ser\~{a}o utilizadas bases com fotos completas de esfrega\c{c}o sangu\'{i}neo, em especial o dataset \href{https://www.kaggle.com/datasets/impal20/rvpbs-dataset}{\textbf{RV-PBS (WBC Instance Segmentation \& Classification)}} e a base aberta \href{https://github.com/Shenggan/BCCD_Dataset}{\textbf{BCCD (Blood Cell Count and Detection)}}. Nessas imagens, m\'{u}ltiplos gl\'{o}bulos brancos aparecem distribu\'{i}dos na l\^{a}mina, permitindo simular a rotina de varredura microsc\'{o}pica real.
+    \item \textbf{Imagens de C\'{e}lulas Individuais:} para a etapa de calibra\c{c}\~{a}o fina e an\'{a}lise detalhada das cinco linhagens leucocit\'{a}rias, ser\'{a} empregada a base \href{https://www.kaggle.com/datasets/paultimothymooney/blood-cells}{\textbf{Peripheral Blood Cell (PBC) / CellaVision}}, contendo mais de 17.000 imagens cl\'{i}nicas rotuladas por patologistas.
+\end{enumerate}
+
+Caso surjam dificuldades t\'{e}cnicas de processamento, inconsist\^{e}ncias de anota\c{c}\~{a}o ou qualquer outro impedimento com esses conjuntos ao longo do desenvolvimento, poder\~{a}o ser adotadas outras bases p\'{u}blicas equivalentes (como o reposit\'{o}rio aberto \href{https://homes.di.unimi.it/scotti/all/}{\textbf{ALL-IDB}} ou cole\c{c}\~{o}es no Kaggle/Roboflow) que forne\c{c}am as imagens necess\'{a}rias.
+
+% ============================================================
+% 3. METODOLOGIA
+% ============================================================
+\section{Metodologia}
+
+O processamento seguir\'{a} um fluxo linear, organizado nas etapas ilustradas a seguir:
+
+\begin{figure}[H]
+    \centering
+    \fbox{%
+        \parbox{0.65\textwidth}{%
+            \centering\small\singlespacing
+            \textbf{Imagem de Entrada (RGB)}\\[0.3em]
+            $\boldsymbol{\downarrow}$\\[0.3em]
+            \textbf{1. Ajuste de Cores e Contraste}\\[0.1em]
+            {\footnotesize (Convers\~{a}o de canais e realce local)}\\[0.3em]
+            $\boldsymbol{\downarrow}$\\[0.3em]
+            \textbf{2. Limpeza e Suaviza\c{c}\~{a}o}\\[0.1em]
+            {\footnotesize (Atenua\c{c}\~{a}o de ru\'{i}dos da captura)}\\[0.3em]
+            $\boldsymbol{\downarrow}$\\[0.3em]
+            \textbf{3. Segmenta\c{c}\~{a}o}\\[0.1em]
+            {\footnotesize (Separa\c{c}\~{a}o do n\'{u}cleo e corpo celular)}\\[0.3em]
+            $\boldsymbol{\downarrow}$\\[0.3em]
+            \textbf{4. Refinamento de Formas}\\[0.1em]
+            {\footnotesize (Morfologia e preenchimento de falhas)}\\[0.3em]
+            $\boldsymbol{\downarrow}$\\[0.3em]
+            \textbf{5. Extra\c{c}\~{a}o de Medidas}\\[0.1em]
+            {\footnotesize (Propor\c{c}\~{a}o, contorno e colora\c{c}\~{a}o)}\\[0.3em]
+            $\boldsymbol{\downarrow}$\\[0.3em]
+            \textbf{6. Classifica\c{c}\~{a}o e Laudo}\\[0.1em]
+            {\footnotesize (Identifica\c{c}\~{a}o do tipo e contagem percentual)}
+        }%
+    }
+    \caption{Fluxo em etapas do pipeline proposto.}
+\end{figure}
+
+\subsection{Vis\~{a}o Macro das Etapas}
+
+\begin{enumerate}
+    \item \textbf{Ajuste de Cores e Contraste:} como as colora\c{c}\~{o}es sangu\'{i}neas destacam o n\'{u}cleo em tons de roxo/azul e o restante em tons r\'{o}seos, mudamos o modelo de cor da imagem para real\c{c}ar essa diferen\c{c}a e evidenciar os detalhes internos.
+    
+    \item \textbf{Limpeza e Suaviza\c{c}\~{a}o:} aplica\c{c}\~{a}o de filtros b\'{a}sicos para atenuar pequenas imperfei\c{c}\~{o}es e ru\'{i}dos do microsc\'{o}pio sem apagar as fronteiras celulares.
+    
+    \item \textbf{Segmenta\c{c}\~{a}o:} divis\~{a}o autom\'{a}tica da imagem em partes de interesse, isolando o que \'{e} n\'{u}cleo, o que \'{e} citoplasma e o que \'{e} fundo/hem\'{a}cia.
+    
+    \item \textbf{Refinamento de Formas:} uso de opera\c{c}\~{o}es morfol\'{o}gicas para tapar buracos indesejados, suavizar bordas recortadas e garantir m\'{a}scaras celulares cont\'{i}nuas.
+    
+    \item \textbf{Extra\c{c}\~{a}o de Medidas:} obten\c{c}\~{a}o das principais caracter\'{i}sticas visuais de cada c\'{e}lula, tais como o percentual de espa\c{c}o que o n\'{u}cleo ocupa em rela\c{c}\~{a}o ao citoplasma, se o n\'{u}cleo \'{e} arredondado ou dividido em peda\c{c}os, e o tom/granula\c{c}\~{a}o do citoplasma.
+    
+    \item \textbf{Classifica\c{c}\~{a}o e Laudo:} com base nessas caracter\'{i}sticas, um modelo de classifica\c{c}\~{a}o identifica qual \'{e} o tipo do gl\'{o}bulo branco e calcula os percentuais correspondentes, gerando o laudo com a contagem diferencial.
+\end{enumerate}
+
+% ============================================================
+% 4. DESENVOLVIMENTO E RESULTADOS ESPERADOS
+% ============================================================
+\section{Desenvolvimento e Resultados Esperados}
+
+\subsection{Implementa\c{c}\~{a}o}
+A solu\c{c}\~{a}o ser\'{a} escrita em \textbf{Python}, com foco no uso direto de matrizes com \textbf{NumPy} e opera\c{c}\~{o}es gr\'{a}ficas com \textbf{OpenCV}, al\'{e}m de \textbf{Matplotlib} para mostrar os resultados intermedi\'{a}rios e \textbf{scikit-learn} para os modelos de classifica\c{c}\~{a}o.
+
+\subsection{O Que Ser\'{a} Avaliado}
+Os resultados ser\~{a}o demonstrados de duas formas:
+\begin{itemize}
+    \item \textbf{Visualmente:} mostrando o passo a passo com a imagem original, as etapas de corte/m\'{a}scara e os contornos finais encontrados;
+    \item \textbf{Numericamente:} medindo a taxa de acerto global na classifica\c{c}\~{a}o das c\'{e}lulas, a matriz com os acertos e confus\~{o}es entre classes e a proximidade do laudo percentual obtido com os dados reais.
+\end{itemize}
+
+% ============================================================
+% 5. REFERÊNCIAS
+% ============================================================
+\section{Refer\^{e}ncias}
+
+\begin{enumerate}
+    \item ACEVEDO, Andrea et al. A dataset of microscopic peripheral blood cell images for development of automatic recognition systems. \textbf{Data in Brief}, v. 30, p. 105474, 2020. DOI: \url{https://doi.org/10.1016/j.dib.2020.105474}.
+    
+    \item GONZALEZ, Rafael C.; WOODS, Richard E. \textbf{Processamento Digital de Imagens}. 4. ed. S\~{a}o Paulo: Pearson, 2018.
+    
+    \item MOONEY, Paul. \textbf{Blood Cell Images Dataset (CellaVision)}. Kaggle, 2018. Dispon\'{i}vel em: \url{https://www.kaggle.com/datasets/paultimothymooney/blood-cells}.
+    
+    \item PAL, Jimut Bahan et al. RV-PBS: A novel dataset for white blood cell instance segmentation and classification. \textbf{Expert Systems with Applications}, v. 238, p. 122248, 2024. Dispon\'{i}vel em: \url{https://www.kaggle.com/datasets/impal20/rvpbs-dataset}.
+    
+    \item SHENGGAN. \textbf{BCCD Dataset: Blood Cell Count and Detection}. GitHub, 2019. Dispon\'{i}vel em: \url{https://github.com/Shenggan/BCCD_Dataset}.
+    
+    \item LABATI, Ruggero Donida; PIURI, Vincenzo; SCOTTI, Fabio. All-IDB: The Acute Lymphoblastic Leukemia Image Database for Image Processing. In: \textbf{18th IEEE International Conference on Image Processing (ICIP)}, 2011, p. 2045-2048. Dispon\'{i}vel em: \url{https://homes.di.unimi.it/scotti/all/}.
+\end{enumerate}
+
+\end{document}
